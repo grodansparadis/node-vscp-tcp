@@ -1,13 +1,17 @@
-<img src="https://vscp.org/images/logo.png" width="100">
+# node-vscp-tcp documentation
 
-This modules supplies VSCP tcp/ip remote functionality that make it possible to connect to a remote VSCP server (vscpd) or a tcp/ip based VSCP device.
+![VSCP Logo](https://vscp.org/images/vscp_logo_text_box_200.png "VSCP Logo")
+
+This modules provides VSCP tcp/ip remote functionality that make it possible to connect to a remote VSCP server (vscpd) or a tcp/ip based VSCP hardware device that have the [tcp/link interface](https://docs.vscp.org/spec/latest/#/./vscp_over_tcp_ip).
 
 
 ## Install
 
-    npm install node-vscp-tcp --save
+```bash
+npm install node-vscp-tcp --save
+```
 
-Remove --save if you don't want to save dependencies to package.json
+Remove __--save__ if you don't want to save dependencies to your _package.json_ file.
 
 ## Usage
 
@@ -91,53 +95,6 @@ const testAsync = async () => {
   console.log(vscp.varTypeNames[1]);
   console.log(vscp);
 
-  // Create a remote variable named 'testvar'. Type=string
-  const varCreate = await vscp_tcp_client.writeVar({
-    name: "testvar",
-    value: 'This is a test åäöÅÄÖ',
-    note: 'This is a super variable åäöÅÄÖ'
-  });
-  console.log(varCreate);
-
-  // List all stock variables
-  const varList = await vscp_tcp_client.listVar({
-    onSuccess: success,
-    regex: 'vscp'
-  });
-  console.log(varList);
-
-  // Read remote variable 'testvar' info
-  const varRead = await vscp_tcp_client.readVar({
-    name: 'testvar'
-  });
-  console.log(varRead);
-
-  // Read remote variable 'testvar' value
-  const varReadValue = await vscp_tcp_client.readVarValue({
-    name: 'testvar'
-  });
-  console.log(varReadValue);
-
-  // Write a new value to remote variable 'testvar'
-  const varWriteValue = await vscp_tcp_client.writeVarValue({
-    name: 'testvar',
-    value: 'Det här är det nya värdet'
-  });
-  console.log(varWriteValue);
-
-  // Read value of remote variable testvar
-  const varReadValue2 = await vscp_tcp_client.readVarValue({
-    name: 'testvar'
-  });
-  console.log(varReadValue2);
-
-  // Read note for remote variable 'testvar'
-  const varReadNote = await vscp_tcp_client.readVarNote({
-    onSuccess: success,
-    name: 'testvar'
-  });
-  console.log(varReadNote);
-
   // Disconnect from remote VSCP server/device
   await vscp_tcp_client.disconnect();
 }
@@ -148,7 +105,7 @@ testAsync().catch(err => {
 })
 ```
 
-Several of the commands above is sent using **sendcommand**. This command allows for sending any command and argument and the response will be a response object with information about the outcome of the command. For example  the user command reponse is
+Several of the commands above is sent using **sendcommand**. This command allows for sending any command and argument and the response will be a response object with information about the outcome of the command. For example  the user command response is
 
 ```javascript
 { command: 'USER',
@@ -157,14 +114,14 @@ Several of the commands above is sent using **sendcommand**. This command allows
   result: 'success' }
 ```
 
-The content is pretty obvious.
+The content of the response object is pretty obvious.
 
 * **command** - The issued command.
 * **argument** - Command argument.
 * **result** - 'success' if a positive reply was detected.
 * **response** - This is an array with the response from the server. Each item is string and the last entry is always '+OK......" in some form.
 
-The obvious way to get events is to poll fo them. You can do that wit the following code
+One way to get events is to poll fo them. You can do that with the following code
 
 ```javascript
 
@@ -213,7 +170,7 @@ testRcvLoop().catch(err => {
 })
 ```
 
-It is always ok to have more then one connection open to a VSCP daemon. This is not always true for a low end tcp/ip device. Some may just allow for one client connection. You can use the **wcyd** command to check if a node accept more than one connection.
+It is always ok to have more then one connection open to a VSCP daemon. This is not always true for a lower end VSCP tcp/ip device. Some may just allow for one client connection. You can use the **wcyd** command to check if a node accept more than one connection.
 
 Another thing to remember if you have more than one connection to a remote server/device is that if you just open up a second connection you will receive the events you send on the other connection.You can prevent this by setting the receiving channels channel id to the same value as the sending channels id. User **getChannelID** to get the channel oid and set it with **setChannelID**
 
