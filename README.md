@@ -8,7 +8,7 @@
 
 VSCP remote server tcp/ip client functionality for node.js
 
-Functionality is described [here](README_tcpip.md)
+Functionality is described [here](./README_tcpip.md)
 
 Full documentation for VSCP is available at [https://docs.vscp.org](https://docs.vscp.org) and downloads can be found at [https://download.vscp.org](https://download.vscp.org)
 

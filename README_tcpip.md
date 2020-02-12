@@ -19,7 +19,6 @@ Include the module with
 
 ```javascript
 const vscp_tcp_client = require('node-vscp-tcp');
-...
 ```
 
 You can use the functionality of this module both with callbacks and promises.
@@ -108,10 +107,12 @@ testAsync().catch(err => {
 Several of the commands above is sent using **sendcommand**. This command allows for sending any command and argument and the response will be a response object with information about the outcome of the command. For example  the user command response is
 
 ```javascript
-{ command: 'USER',
+{ 
+  command: 'USER',
   argument: 'admin',
   response: [ '+OK - User name accepted, password please' ],
-  result: 'success' }
+  result: 'success' 
+}
 ```
 
 The content of the response object is pretty obvious.
