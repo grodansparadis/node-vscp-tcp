@@ -11,7 +11,7 @@ This modules provides VSCP tcp/ip remote functionality that make it possible to 
 npm install node-vscp-tcp --save
 ```
 
-Remove __--save__ if you don't want to save dependencies to your _package.json_ file.
+Remove _--save_ if you don't want to save dependencies to your _package.json_ file.
 
 ## Usage
 
@@ -29,6 +29,22 @@ Easiest is to use async calls like this
 const testAsync = async () => {
 
   let vscp_tcp_client = new vscp_tcp_Client();
+
+  vscpclient.on('connect', function() {
+    console.log("---------------- CONNECT -------------------");
+  });
+
+  vscpclient.on('disconnect', function() {
+    console.log("---------------- DISCONNECT -------------------");
+  });
+
+  vscpclient.on('timeout', function() {
+    console.log("---------------- TIMEOUT -------------------");
+  });
+
+  vscpclient.on('error', function() {
+    console.log("---------------- ERROR -------------------");
+  });
 
   // Connect to VSCP server/device
   const value1 = await vscp_tcp_client.connect(

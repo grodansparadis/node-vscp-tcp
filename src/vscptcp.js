@@ -39,8 +39,7 @@ const util = require('util');
 const events = require('events');
 const net = require('net');
 const vscp = require('node-vscp');
-// https://nodejs.org/api/util.html
-const util = require('util');
+
 
 /* ---------------------------------------------------------------------- */
 
@@ -1033,7 +1032,7 @@ Client.prototype.connect = function (options) {
             this.socket.once('end', () => {
                 if (this.state !== this.states.DISCONNECTED) {
                     clearTimeout(timer);
-                    this.emit('onend');
+                    this.emit('disconnect');
                     console.info(vscp.getTime() +
                         " tcp/ip connection closed (by remote end).");
                     this.state = this.states.DISCONNECTED;
@@ -1045,7 +1044,7 @@ Client.prototype.connect = function (options) {
                 " tcp/ip connection to remote VSCP server established.");
             this.state = this.states.CONNECTED;
 
-            this.emit('onconnect');
+            this.emit('connect');
             clearTimeout(timer);
 
             this._sendCommand(
@@ -1072,7 +1071,7 @@ Client.prototype.connect = function (options) {
         }
 
         this.socket.on('error', function (error) {
-            this.emit('onerror', error);
+            this.emit('error', error);
             clearTimeout(timer);
 
             console.error(vscp.getTime() +
@@ -1087,7 +1086,7 @@ Client.prototype.connect = function (options) {
         }.bind(this));
 
         this.socket.on('timeout', function () {
-            this.emit('ontimeout');
+            this.emit('timeout');
             debuglog('>timeout');
         }.bind(this));
 

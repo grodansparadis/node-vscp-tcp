@@ -25,12 +25,28 @@ const testAsync = async () => {
     console.log("Connect to local VSCP daemon");
     console.log("============================");
 
-    let vscpclient = new vscp_tcp_client();
+    let vscpclient = new vscp_tcp_client(); 
+
+    vscpclient.on('connect', function() {
+      console.log("---------------- CONNECT -------------------");
+    });
+
+    vscpclient.on('disconnect', function() {
+      console.log("---------------- DISCONNECT -------------------");
+    });
+
+    vscpclient.on('timeout', function() {
+      console.log("---------------- TIMEOUT -------------------");
+    });
+
+    vscpclient.on('error', function() {
+      console.log("---------------- ERROR -------------------");
+    });
   
     // Connect to VSCP server/device
     const value1 = await vscpclient.connect(
       {
-        host: "192.168.1.1",
+        host: "192.168.1.6",
         port: 9598,
         timeout: 10000
       });
