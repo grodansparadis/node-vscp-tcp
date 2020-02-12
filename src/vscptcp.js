@@ -39,6 +39,8 @@ const util = require('util');
 const events = require('events');
 const net = require('net');
 const vscp = require('node-vscp');
+// https://nodejs.org/api/util.html
+const util = require('util');
 
 /* ---------------------------------------------------------------------- */
 
@@ -521,7 +523,7 @@ Client.prototype.parseChallenge = function (result) {
 Client.prototype.parseRetrieveEvents = function (result) {
     let events = [];
     let cntElements = result.response.length;
-    console.log(result);
+    
     if ((result.response.length >= 2) &&
         (result.command === 'RETR') &&
         (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
@@ -719,7 +721,7 @@ Client.prototype.parseVariable = function (result) {
 Client.prototype.parseVariableValue = function (result, cmd) {
     let value = '';
     let cntElements = result.response.length;
-    console.log(cmd.toUpperCase());
+    debuglog(cmd.toUpperCase());
     if ((result.response.length >= 2) &&
         (result.command === cmd.toUpperCase()) &&
         (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
@@ -824,20 +826,20 @@ Client.prototype.onSrvResponse = function (chunk) {
             if (-1 !== (posOk = this.collectedData.search("\\+OK"))) {
 
                 lastPart = this.collectedData.substring(posOk);
-                //console.log('lastPart = [' + lastPart + ']');
+                //debuglog('lastPart = [' + lastPart + ']');
                 if (-1 !== (posEnd = lastPart.search("\r\n"))) {
-                    //console.log(posOk,posEnd);
+                    //debuglog(posOk,posEnd);
                     response = this.collectedData.substring(0, posOk) +
                         lastPart.substring(0, posEnd + 2);
-                    //console.log('response = [' + response + ']');
+                    //debuglog('response = [' + response + ']');
                     lastPart = this.collectedData.substring(posOk + posEnd + 2);
-                    //console.log('lastPart = [' + lastPart + ']');
+                    //debuglog('lastPart = [' + lastPart + ']');
 
                     // save remaining part of server response for further processing
                     this.collectedData = this.collectedData.substring(posOk + 2 + posEnd + 2);
                     responseList = response.split("\r\n");
                     responseList.pop(); // Remove last ('\r\n')
-                    //console.log(responseList);
+                    //debuglog(responseList);
                     this._signalSuccess(
                         {
                             command: this.cmdQueue[0].command,
@@ -847,14 +849,14 @@ Client.prototype.onSrvResponse = function (chunk) {
                 }
             } else if (-1 !== (posOk = this.collectedData.search("\\-OK"))) {
                 lastPart = this.collectedData.substring(posOk);
-                //console.log('lastPart = [' + lastPart + ']');
+                //debuglog('lastPart = [' + lastPart + ']');
                 if (-1 !== (posEnd = lastPart.search("\r\n"))) {
-                    //console.log(posOk,posEnd);
+                    //debuglog(posOk,posEnd);
                     response = this.collectedData.substring(0, posOk) +
                         lastPart.substring(0, posEnd + 2);
-                    //console.log('response = [' + response + ']');
+                    //debuglog('response = [' + response + ']');
                     lastPart = this.collectedData.substring(posOk + posEnd + 2);
-                    //console.log('lastPart = [' + lastPart + ']');
+                    //debuglog('lastPart = [' + lastPart + ']');
                     // save remaining part of server response for further processing
                     this.collectedData = this.collectedData.substring(posOk + 2 + posEnd + 2);
                     responseList = response.split("\r\n");
@@ -876,7 +878,7 @@ Client.prototype.onSrvResponse = function (chunk) {
 
             for (let idx = 0; idx < responseList.length; idx++) {
 
-                //console.log("[" + responseList[idx] + "]");
+                //debuglog("[" + responseList[idx] + "]");
 
                 if ('+OK' !== responseList[idx]) {
 
@@ -926,7 +928,7 @@ Client.prototype.onSrvResponse = function (chunk) {
             }
         }
         else {
-            console.log('invalid state');
+            debuglog('invalid state');
         }
     }
 
@@ -1059,7 +1061,7 @@ Client.prototype.connect = function (options) {
         });
 
         timer = setTimeout(function () {
-            console.log("[ERROR] Attempt at connection exceeded timeout value");
+            console.error("[ERROR] Attempt at connection exceeded timeout value");
             this.socket.end();
             reject(Error("tcp/ip connection timed out."));
         }.bind(this), this.timeout);
@@ -1086,7 +1088,7 @@ Client.prototype.connect = function (options) {
 
         this.socket.on('timeout', function () {
             this.emit('ontimeout');
-            console.log('>timeout');
+            debuglog('>timeout');
         }.bind(this));
 
     }.bind(this));
@@ -1111,9 +1113,8 @@ Client.prototype.disconnect = function (options) {
         console.info(vscp.getTime() + "[COMMAND] Disconnect VSCP tcp/ip connection.");
 
         if ("undefined" !== typeof options) {
-            console.log(options.onSuccess);
+            debuglog(options.onSuccess);
             if ("function" === typeof options.onSuccess) {
-                console.log(1);
                 onSuccess = options.onSuccess;
             }
         }
