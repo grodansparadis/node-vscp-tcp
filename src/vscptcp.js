@@ -40,6 +40,9 @@ const events = require('events');
 const net = require('net');
 const vscp = require('node-vscp');
 
+// To display debug messages
+// NODE_DEBUG=node-vscp-tcp
+const debuglog = util.debuglog('node-vscp-tcp');
 
 /* ---------------------------------------------------------------------- */
 
@@ -417,7 +420,7 @@ module.exports = Client = function() {
       cmdStr += '\r\n'
 
       /* Send command via tcp/ip to the VSCP server */
-      console.debug(vscp.getTime() + ' Cmd: ' + cmdStr.trim());
+      debuglog(vscp.getTime() + ' Cmd: ' + cmdStr.trim());
       this.socket.write(cmdStr);
     };
   };
@@ -923,16 +926,16 @@ Client.prototype.onSrvResponse = function(chunk) {
               evt.vscpData[index] = parseInt(eventItems[offset + 7 + index]);
             }
 
-            // console.debug(
-            //     vscp.getTime() + ' Evt: ' +
-            //     ' CLASS = ' + evt.vscpClass + ' TYPE = ' + evt.vscpType +
-            //     ' GUID = ' + evt.vscpGuid +
-            //     ' DATETIME = ' + evt.vscpDateTime.toISOString() +
-            //     ' PRIORITY = ' + evt.getPriority() + ' DATA = ' + evt.vscpData);
+            debuglog(
+                vscp.getTime() + ' Evt: ' +
+                ' CLASS = ' + evt.vscpClass + ' TYPE = ' + evt.vscpType +
+                ' GUID = ' + evt.vscpGuid +
+                ' DATETIME = ' + evt.vscpDateTime.toISOString() +
+                ' PRIORITY = ' + evt.getPriority() + ' DATA = ' + evt.vscpData);
 
             this._signalEvent(evt);
           } catch(err) {
-            console.debug("Exception in event emitter:", err.message );
+            console.error("Exception in event emitter:", err.message );
           }
         } else if (-1 !== responseList[idx].search('\\-OK -')) {
           // todo error
@@ -1230,7 +1233,7 @@ Client.prototype.sendCommand = function(options) {
       cmdStr += '\r\n'
 
       /* Send command via tcp/ip to the VSCP server */
-      console.debug(vscp.getTime() + ' Cmd: ' + cmdStr.trim());
+      debuglog(vscp.getTime() + ' Cmd: ' + cmdStr.trim());
       this.socket.write(cmdStr);
     };
   }.bind(this));
