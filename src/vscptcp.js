@@ -1592,7 +1592,7 @@ Client.prototype.startRcvLoop = async function(options) {
  * @param {function} [options.onSuccess] - Function which is called on
  *                                         a successful operation
  * @param {function} [options.onError]   - Function which is called on
- *                                         a failed operation
+ *                                   a failed operation
  * @return {object} Result object
  */
 
