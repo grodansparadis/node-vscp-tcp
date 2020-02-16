@@ -5,6 +5,7 @@
   "main": "./src/vscptcp.js",
   "scripts": {
     "test": "node ./test/test.js",
+    "testrcv": "node ./test/test_rcvloop.js",
     "readme2html": "node_modules/.bin/markdown README.md -f gfm",
     "update-dependencies": "./node_modules/.bin/ncu -u && npm install",
     "lint": "./node_modules/.bin/eslint ."

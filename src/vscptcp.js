@@ -41,8 +41,9 @@ const net = require('net');
 const vscp = require('node-vscp');
 
 // To display debug messages
-// NODE_DEBUG=node-vscp-tcp
+// NODE_DEBUG=node-vscp-tcp node-vscp-tcp-msg
 const debuglog = util.debuglog('node-vscp-tcp');
+const msg_debuglog = util.debuglog('node-vscp-tcp-msg');
 
 /* ---------------------------------------------------------------------- */
 
@@ -845,21 +846,21 @@ Client.prototype.onSrvResponse = function(chunk) {
       // Positive response? ("+OK ......\r\n")
       if (-1 !== (posOk = this.collectedData.search('\\+OK'))) {
         lastPart = this.collectedData.substring(posOk);
-        // debuglog('lastPart = [' + lastPart + ']');
+        msg_debuglog('lastPart = [' + lastPart + ']');
         if (-1 !== (posEnd = lastPart.search('\r\n'))) {
-          // debuglog(posOk,posEnd);
+          msg_debuglog(posOk,posEnd);
           response = this.collectedData.substring(0, posOk) +
               lastPart.substring(0, posEnd + 2);
-          // debuglog('response = [' + response + ']');
+          msg_debuglog('response = [' + response + ']');
           lastPart = this.collectedData.substring(posOk + posEnd + 2);
-          // debuglog('lastPart = [' + lastPart + ']');
+          msg_debuglog('lastPart = [' + lastPart + ']');
 
           // save remaining part of server response for further processing
           this.collectedData =
               this.collectedData.substring(posOk + 2 + posEnd + 2);
           responseList = response.split('\r\n');
           responseList.pop();  // Remove last ('\r\n')
-          // debuglog(responseList);
+          msg_debuglog(responseList);
           this._signalSuccess({
             command: this.cmdQueue[0].command,
             argument: this.cmdQueue[0].argument,
@@ -868,14 +869,14 @@ Client.prototype.onSrvResponse = function(chunk) {
         }
       } else if (-1 !== (posOk = this.collectedData.search('\\-OK'))) {
         lastPart = this.collectedData.substring(posOk);
-        // debuglog('lastPart = [' + lastPart + ']');
+        msg_debuglog('lastPart = [' + lastPart + ']');
         if (-1 !== (posEnd = lastPart.search('\r\n'))) {
-          // debuglog(posOk,posEnd);
+          msg_debuglog(posOk,posEnd);
           response = this.collectedData.substring(0, posOk) +
               lastPart.substring(0, posEnd + 2);
-          // debuglog('response = [' + response + ']');
+              msg_debuglog('response = [' + response + ']');
           lastPart = this.collectedData.substring(posOk + posEnd + 2);
-          // debuglog('lastPart = [' + lastPart + ']');
+          msg_debuglog('lastPart = [' + lastPart + ']');
           // save remaining part of server response for further processing
           this.collectedData =
               this.collectedData.substring(posOk + 2 + posEnd + 2);
@@ -895,7 +896,7 @@ Client.prototype.onSrvResponse = function(chunk) {
       responseList.pop();  // Remove last CR LF pair
 
       for (let idx = 0; idx < responseList.length; idx++) {
-        // debuglog("[" + responseList[idx] + "]");
+        msg_debuglog("[" + responseList[idx] + "]");
 
         if ('+OK' !== responseList[idx]) {
           try {
@@ -926,7 +927,7 @@ Client.prototype.onSrvResponse = function(chunk) {
               evt.vscpData[index] = parseInt(eventItems[offset + 7 + index]);
             }
 
-            debuglog(
+            msg_debuglog(
                 vscp.getTime() + ' Evt: ' +
                 ' CLASS = ' + evt.vscpClass + ' TYPE = ' + evt.vscpType +
                 ' GUID = ' + evt.vscpGuid +
@@ -938,13 +939,16 @@ Client.prototype.onSrvResponse = function(chunk) {
             console.error("Exception in event emitter:", err.message );
           }
         } else if (-1 !== responseList[idx].search('\\-OK -')) {
-          // todo error
+          let err = new Error("onSrvResponse: rcvloop error");
+          this.emit('error', err);
         } else {
-          // todo "we are alive"
+          this.emit('alive');
         }
       }
     } else {
-      debuglog('invalid state');
+      debuglog('onSrvResponse: Invalid state');
+      let err = new Error("onSrvResponse: Invalid state");
+      this.emit('error', err);
     }
   }
 };
@@ -1104,7 +1108,7 @@ Client.prototype.connect = function(options) {
 
     this.socket.on('timeout', function() {
       this.emit('timeout');
-      debuglog('>timeout');
+      debuglog('connect: timeout');
     }.bind(this));
   }.bind(this));
 };
@@ -1129,7 +1133,7 @@ Client.prototype.disconnect = function(options) {
         vscp.getTime() + '[COMMAND] Disconnect VSCP tcp/ip connection.');
 
     if ('undefined' !== typeof options) {
-      debuglog(options.onSuccess);
+      debuglog("Disconnect: 'options.onSuccess'" + options.onSuccess);
       if ('function' === typeof options.onSuccess) {
         onSuccess = options.onSuccess;
       }

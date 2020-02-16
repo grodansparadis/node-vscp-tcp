@@ -38,44 +38,43 @@ const vscp_type = require('node-vscp-type');
 const vscp = require('node-vscp');
 const vscp_tcp_client = require('../src/vscptcp.js');
 
-var sleep = require('sleep');
+//var sleep = require('sleep');
+
+let brun = true;    // Truer as long as we should stay in rcvloop
 
 const testAsync = async () => {
-
-    console.log("List constants from vscp module");
-    console.log("===============================");
-    console.log(vscp.version.major);
-    console.log(vscp.varTypes);
-    console.log(vscp.varTypeNames[1]);
-    console.log(vscp);
-
-    console.log("List constants from vscp_class module");
-    console.log("=====================================");
-    console.log(vscp_class);
-
-    console.log("List constants from vscp_type module");
-    console.log("====================================");
-    console.log(vscp_type);
 
     console.log("Connect to local VSCP daemon");
     console.log("============================");
 
     let vscpclient = new vscp_tcp_client(); 
 
+    vscpclient.addEventListener((e) => {
+      console.log("Event:", e);
+    });
+
     vscpclient.on('connect', function() {
-      console.log("---------------- CONNECT -------------------");
+        console.log("---------------- CONNECT -------------------");
     });
 
     vscpclient.on('disconnect', function() {
-      console.log("---------------- DISCONNECT -------------------");
+        console.log("---------------- DISCONNECT -------------------");
     });
 
     vscpclient.on('timeout', function() {
-      console.log("---------------- TIMEOUT -------------------");
+        console.log("---------------- TIMEOUT -------------------");
     });
 
     vscpclient.on('error', function() {
-      console.log("---------------- ERROR -------------------");
+        console.log("---------------- ERROR -------------------");
+    });
+
+    vscpclient.on('event', function(ev) {
+        console.log("---------------- EVENT -------------------");
+    });
+
+    vscpclient.on('alive', function() {
+        console.log("---------------- ALIVE -------------------");
     });
   
     // Connect to VSCP server/device
@@ -86,35 +85,11 @@ const testAsync = async () => {
         timeout: 10000
       });
   
-    console.log("Send NOOP command to VSCP daemon");
-
-    // Send no operation command (does nothing)
-    await vscpclient.sendCommand(
-      {
-        command: "noop"
-      });
-  
-    console.log("Send NOOP command to VSCP daemon");
-
-    // Send no operation command (does nothing)
-    await vscpclient.sendCommand(
-      {
-        command: "noop"
-      });
-  
-    console.log("Send NOOP command to VSCP daemon");
-
-    // Send no operation command (does nothing)
-    await vscpclient.sendCommand(
-      {
-        command: "noop"
-      });
-  
     console.log("Login to VSCP daemon");
 
     // Log on to server (step 1 user name)
     // The response object is returned and logged
-    const userResponse = await vscpclient.sendCommand(
+    let userResponse = await vscpclient.sendCommand(
       {
         command: "user",
         argument: "admin"
@@ -122,63 +97,31 @@ const testAsync = async () => {
     console.log(userResponse);
   
     // Log on to server (step 2 password)
-    await vscpclient.sendCommand(
+    userResponse = await vscpclient.sendCommand(
       {
         command: "pass",
         argument: "secret"
       });
+    console.log(userResponse);
   
-    console.log("Get active interfaces on VSCP daemon");
+    // Enter receive loop
+    userResponse = await vscpclient.startRcvLoop();
+    console.log(userResponse);        
 
-    // Get interfaces available on remote VSCP server
-    const iff = await vscpclient.getInterfaces();
-    console.log(iff);
+    while ( brun ) {
+        yield();
+    }  
+    
+    // Enter receive loop
+    userResponse = await vscpclient.stopRcvLoop();
+    console.log(userResponse);
 
-    console.log("Send NOOP command to VSCP daemon");
-  
-    // Send no operation command (does nothing)
-    await vscpclient.sendCommand(
-      {
-        command: "noop"
-      });
-  
-    console.log("Get version for VSCP daemon");
-
-    // Get VSCP remote server version
-    const ver = await vscpclient.getRemoteVersion();
-    console.log(ver);
-
-    let ev = new vscp.Event();
-
-    ev.vscp_class = 0;
-    ev.vscp_type = vscp
-
-    console.log("Send event to vscp daemon VSCP daemon");
-      
-    console.log("Sleeping for ten seconds to collect some events...");
-    sleep.sleep(10);
-
-    console.log("Get number of events waiting to be fetched on VSCP daemon");
-
-    // Get number of VSCP events waiting to be fetched
-    const cnt = await vscpclient.getPendingEventCount();
-    console.log("Number of events available: "+cnt);    
-
-    if ( cnt > 0 )  {
-      console.log("Receive waiting events from the VSCP daemon");
-      let events = await vscpclient.getEvents(
-        {
-          count: cnt
-        });
-      console.log(events);  
-    }
   
     console.log("Disconnect from VSCP daemon");
 
     // Disconnect from remote VSCP server/device
     await vscpclient.disconnect();
   }
-  
   testAsync().catch(err => {
     console.log("Catching error");
     console.log(err);
