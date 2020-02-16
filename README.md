@@ -5,7 +5,9 @@
 
 # node-vscp-tcp
 
-VSCP remote server tcp/ip client functionality for node.js
+VSCP remote server tcp/ip client functionality for node.js  
+
+You need a running VSCP system to use this software. This can be a VSCP daemon/server or one or more VSCP hosts that export the [VSCP tcp/ip link interface](https://docs.vscp.org/spec/latest/#/./vscp_over_tcp_ip).
 
 Install with
 
@@ -13,7 +15,7 @@ Install with
 npm install node-vscp-tcp
 ```
 
-Functionality is described [here](./README_tcpip.md)
+Module unctionality is described [here](./README_tcpip.md)
 
 Full documentation for VSCP is available at [https://docs.vscp.org](https://docs.vscp.org) and downloads can be found at [https://download.vscp.org](https://download.vscp.org)
 
