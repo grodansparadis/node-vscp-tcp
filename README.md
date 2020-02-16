@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://choosealicense.com/licenses/mit/)
-[![Release](https://img.shields.io/github/release/grodansparadis/vscp.svg)](https://github.com/grodansparadis/node.vscp.tcp/releases)
-[![Travis Build Status](https://api.travis-ci.org/grodansparadis/vscp.svg?branch=master)](https://travis-ci.org/grodansparadis/node.vscp.tcp)
+[![Release](node-vscp-tcp)](https://img.shields.io/github/v/release/grodansparadis/node-vscp-tcp)
+[![Travis Build Status](https://api.travis-ci.org/grodansparadis/node-vscp-tcp.svg?branch=master)](https://travis-ci.org/grodansparadis/node-vscp-tcp)
 
 <img src="https://vscp.org/images/logo.png" width="100">
 
