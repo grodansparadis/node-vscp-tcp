@@ -172,7 +172,7 @@ const testAsync = async () => {
         });
       console.log(events);  
     }
-  
+
     console.log("Disconnect from VSCP daemon");
 
     // Disconnect from remote VSCP server/device
