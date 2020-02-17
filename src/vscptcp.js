@@ -2447,5 +2447,3 @@ Client.prototype.getWhatCanYouDo = async function(options) {
   return this.parseWcyd(result);
 };
 
-
-
