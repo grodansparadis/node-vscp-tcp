@@ -41,7 +41,7 @@ const net = require('net');
 const vscp = require('node-vscp');
 
 // To display debug messages
-// NODE_DEBUG=node-vscp-tcp node-vscp-tcp-msg
+// export NODE_DEBUG=node-vscp-tcp node-vscp-tcp-msg
 const debuglog = util.debuglog('node-vscp-tcp');
 const msg_debuglog = util.debuglog('node-vscp-tcp-msg');
 
@@ -1830,75 +1830,80 @@ Client.prototype.shutdown = async function(options) {
  *
  * @return {object} Promise
  */
-Client.prototype.setFilter = function(options) {
-  return new Promise(function(resolve, reject) {
-    var onSuccess = null;
-    var onError = null;
-    var cmdData = '';
-    var filterPriority = 0;
-    var filterClass = 0;
-    var filterType = 0;
-    var filterGuid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+Client.prototype.setFilter = async function(options) {
+  
+  var onSuccess = null;
+  var onError = null;
+  var cmdData = '';
+  var filterPriority = 0;
+  var filterClass = 0;
+  var filterType = 0;
+  var filterGuid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    if ('undefined' === typeof options) {
-      console.error(vscp.getTime() + ' Options are missing.');
-      reject(Error('Options are missing.'));
+  debuglog("setFilter");
+
+  if ('undefined' === typeof options) {
+    console.error(vscp.getTime() + ' Options are missing.');
+    reject(Error('Options are missing.'));
+    return;
+  }
+
+  if ('number' === typeof options.filterPriority) {
+    filterPriority = options.filterPriority;
+  }
+
+  if ('number' === typeof options.filterClass) {
+    filterClass = options.filterClass;
+  }
+
+  if ('number' === typeof options.filterType) {
+    filterType = options.filterType;
+  }
+
+  if (options.filterGuid instanceof Array) {
+
+    if (16 !== options.filterGuid.length) {
+      console.error(vscp.getTime() + ' GUID filter length is invalid.');
+      reject(Error('GUID filter length is invalid.'));
       return;
     }
 
-    if ('number' === typeof options.filterPriority) {
-      filterPriority = options.filterPriority;
+    filterGuid = options.filterGuid;
+  } else if ('string' === typeof options.filterGuid) {
+    filterGuid = options.filterGuid;
+
+    if (16 !== filterGuid.length) {
+      console.error(vscp.getTime() + ' GUID filter is invalid.');
+      reject(Error('GUID filter is invalid.'));
+      return;
     }
+  }
 
-    if ('number' === typeof options.filterClass) {
-      filterClass = options.filterClass;
-    }
+  if ('function' === typeof options.onSuccess) {
+    onSuccess = options.onSuccess;
+  }
 
-    if ('number' === typeof options.filterType) {
-      filterType = options.filterType;
-    }
+  if ('function' === typeof options.onError) {
+    onError = options.onError;
+  }
 
-    if (options.filterGuid instanceof Array) {
-      if (16 !== options.filterGuid.length) {
-        console.error(vscp.getTime() + ' GUID filter length is invalid.');
-        reject(Error('GUID filter length is invalid.'));
-        return;
-      }
+  cmdData = '0x' + filterPriority.toString(16) + ',';
+  cmdData += '0x' + filterClass.toString(16) + ',';
+  cmdData += '0x' + filterType.toString(16) + ',';
 
-      filterGuid = options.filterGuid;
-    } else if ('string' === typeof options.filterGuid) {
-      filterGuid = options.filterGuid;
+  cmdData += vscp.guidToStr(filterGuid);
 
-      if (16 !== filterGuid.length) {
-        console.error(vscp.getTime() + ' GUID filter is invalid.');
-        reject(Error('GUID filter is invalid.'));
-        return;
-      }
-    }
+  debuglog("setFilter cmdData: " + cmdData);
 
-    if ('function' === typeof options.onSuccess) {
-      onSuccess = options.onSuccess;
-    }
+  const result = await this.sendCommand({
+    command: 'setfilter',
+    argument: cmdData,
+    onSuccess: onSuccess,
+    onError: onError,
+  });
 
-    if ('function' === typeof options.onError) {
-      onError = options.onError;
-    }
+  return result;
 
-    cmdData = '0x' + filterPriority.toString(16) + ',';
-    cmdData += '0x' + filterClass.toString(16) + ',';
-    cmdData += '0x' + filterType.toString(16) + ',';
-
-    cmdData += vscp.guidToStr(filterGuid);
-
-    this.sendCommand({
-      command: 'setfilter',
-      argument: cmdData,
-      onSuccess: onSuccess,
-      onError: onError,
-      resolve: resolve,
-      reject: reject
-    });
-  }.bind(this));
 };
 
 /**
@@ -1920,75 +1925,73 @@ Client.prototype.setFilter = function(options) {
  *
  * @return {object} Promise
  */
-Client.prototype.setMask = function(options) {
-  return new Promise(function(resolve, reject) {
-    var onSuccess = null;
-    var onError = null;
-    var cmdData = '';
-    var maskPriority = 0;
-    var maskClass = 0xffff;
-    var maskType = 0xffff;
-    var maskGuid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+Client.prototype.setMask = async function(options) {
+  var onSuccess = null;
+  var onError = null;
+  var cmdData = '';
+  var maskPriority = 0;
+  var maskClass = 0xffff;
+  var maskType = 0xffff;
+  var maskGuid = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-    if ('undefined' === typeof options) {
-      console.error(vscp.getTime() + ' Options are missing.');
-      reject(Error('Options are missing.'));
+  if ('undefined' === typeof options) {
+    console.error(vscp.getTime() + ' Options are missing.');
+    reject(Error('Options are missing.'));
+    return;
+  }
+
+  if ('number' === typeof options.maskPriority) {
+    maskPriority = options.maskPriority;
+  }
+
+  if ('number' === typeof options.maskClass) {
+    maskClass = options.maskClass;
+  }
+
+  if ('number' === typeof options.maskType) {
+    maskType = options.maskType;
+  }
+
+  if (options.maskGuid instanceof Array) {
+    if (16 !== options.maskGuid.length) {
+      console.error(vscp.getTime() + ' GUID mask length is invalid.');
+      reject(Error('GUID mask length is invalid.'));
       return;
     }
 
-    if ('number' === typeof options.maskPriority) {
-      maskPriority = options.maskPriority;
+    maskGuid = options.maskGuid;
+  } else if ('string' === typeof options.maskGuid) {
+    maskGuid = options.maskGuid;
+
+    if (16 !== maskGuid.length) {
+      console.error(vscp.getTime() + ' GUID mask is invalid.');
+      reject(Error('GUID mask is invalid.'));
+      return;
     }
+  }
 
-    if ('number' === typeof options.maskClass) {
-      maskClass = options.maskClass;
-    }
+  if ('function' === typeof options.onSuccess) {
+    onSuccess = options.onSuccess;
+  }
 
-    if ('number' === typeof options.maskType) {
-      maskType = options.maskType;
-    }
+  if ('function' === typeof options.onError) {
+    onError = options.onError;
+  }
 
-    if (options.maskGuid instanceof Array) {
-      if (16 !== options.maskGuid.length) {
-        console.error(vscp.getTime() + ' GUID mask length is invalid.');
-        reject(Error('GUID mask length is invalid.'));
-        return;
-      }
+  cmdData = '0x' + maskPriority.toString(16) + ',';
+  cmdData += '0x' + maskClass.toString(16) + ',';
+  cmdData += '0x' + maskType.toString(16) + ',';
 
-      maskGuid = options.maskGuid;
-    } else if ('string' === typeof options.maskGuid) {
-      maskGuid = options.maskGuid;
+  cmdData += vscp.guidToStr(maskGuid);
 
-      if (16 !== maskGuid.length) {
-        console.error(vscp.getTime() + ' GUID mask is invalid.');
-        reject(Error('GUID mask is invalid.'));
-        return;
-      }
-    }
-
-    if ('function' === typeof options.onSuccess) {
-      onSuccess = options.onSuccess;
-    }
-
-    if ('function' === typeof options.onError) {
-      onError = options.onError;
-    }
-
-    cmdData = '0x' + maskPriority.toString(16) + ',';
-    cmdData += '0x' + maskClass.toString(16) + ',';
-    cmdData += '0x' + maskType.toString(16) + ',';
-
-    cmdData += vscp.guidToStr(maskGuid);
-
-    this.sendCommand({
-      command: 'setmask',
-      argument: cmdData,
-      onSuccess: onSuccess,
-      onError: onError,
-      resolve: resolve,
-      reject: reject
-    });
-  }.bind(this));
+  const result = this.sendCommand({
+    command: 'setmask',
+    argument: cmdData,
+    onSuccess: onSuccess,
+    onError: onError,
+  });
+  
+  return result;
 };
 
 /**

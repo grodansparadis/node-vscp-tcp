@@ -77,19 +77,22 @@ const testAsync = async () => {
         console.log("---------------- ALIVE -------------------");
     });
   
+    let userResponse = {};
+
     // Connect to VSCP server/device
-    const value1 = await vscpclient.connect(
+    userResponse = await vscpclient.connect(
       {
         host: "192.168.1.6",
         port: 9598,
         timeout: 10000
       });
-  
+    
+    console.log(userResponse);  
     console.log("Login to VSCP daemon");
 
     // Log on to server (step 1 user name)
     // The response object is returned and logged
-    let userResponse = await vscpclient.sendCommand(
+    userResponse = await vscpclient.sendCommand(
       {
         command: "user",
         argument: "admin"
@@ -104,6 +107,22 @@ const testAsync = async () => {
       });
     console.log(userResponse);
   
+    userResponse = await vscpclient.setFilter({
+      filterPriority: 0,
+      filterClass: 0,
+      filterType: 0,
+      filterGuid: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    });
+    console.log(userResponse);
+
+    userResponse = await vscpclient.setMask({
+      maskPriority: 0,
+      maskClass: 0,
+      maskType: 0,
+      maskGuid: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    });
+    console.log(userResponse);
+
     // Enter receive loop
     userResponse = await vscpclient.startRcvLoop();
     console.log(userResponse);        
