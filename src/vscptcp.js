@@ -1888,7 +1888,7 @@ Client.prototype.setFilter = function(options) {
     cmdData += '0x' + filterClass.toString(16) + ',';
     cmdData += '0x' + filterType.toString(16) + ',';
 
-    cmdData += vscp_utility_guidToStr(filterGuid);
+    cmdData += vscp.guidToStr(filterGuid);
 
     this.sendCommand({
       command: 'setfilter',
@@ -1974,11 +1974,11 @@ Client.prototype.setMask = function(options) {
       onError = options.onError;
     }
 
-    cmdData += '0x' + maskPriority.toString(16) + ',';
+    cmdData = '0x' + maskPriority.toString(16) + ',';
     cmdData += '0x' + maskClass.toString(16) + ',';
     cmdData += '0x' + maskType.toString(16) + ',';
 
-    cmdData += vscp_utility_guidToStr(maskGuid);
+    cmdData += vscp.guidToStr(maskGuid);
 
     this.sendCommand({
       command: 'setmask',
@@ -2348,7 +2348,7 @@ Client.prototype.sendMeasurement = async function(options) {
       return;
     }
 
-    guid = guidToStr(options.guid);
+    guid = vscp.guidToStr(options.guid);
 
   } else if ('string' === typeof options.guid) {
     guid = options.guid;
