@@ -1,6 +1,6 @@
 {
   "name": "node-vscp-tcp",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "VSCP tcp/ip interface routines for node.js",
   "main": "./src/vscptcp.js",
   "scripts": {
@@ -28,7 +28,7 @@
   "dependencies": {
     "events": "^3.1.0",
     "net": "^1.0.2",
-    "node-vscp": "^1.0.17",
+    "node-vscp": "^1.0.19",
     "util": "^0.12.1"
   },
   "devDependencies": {
