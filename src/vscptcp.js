@@ -1870,13 +1870,15 @@ Client.prototype.setFilter = async function(options) {
 
     filterGuid = options.filterGuid;
   } else if ('string' === typeof options.filterGuid) {
-    filterGuid = options.filterGuid;
+    
+    filterGuid = vscp.strToGuid(options.filterGuid);
 
     if (16 !== filterGuid.length) {
       console.error(vscp.getTime() + ' GUID filter is invalid.');
       reject(Error('GUID filter is invalid.'));
       return;
     }
+
   }
 
   if ('function' === typeof options.onSuccess) {
@@ -1958,13 +1960,15 @@ Client.prototype.setMask = async function(options) {
 
     maskGuid = options.maskGuid;
   } else if ('string' === typeof options.maskGuid) {
-    maskGuid = options.maskGuid;
+  
+    maskGuid = vscp.strToGuid(options.maskGuid);
 
     if (16 !== maskGuid.length) {
       console.error(vscp.getTime() + ' GUID mask is invalid.');
       reject(Error('GUID mask is invalid.'));
       return;
     }
+
   }
 
   if ('function' === typeof options.onSuccess) {

@@ -111,7 +111,7 @@ const testAsync = async () => {
       filterPriority: 0,
       filterClass: 0,
       filterType: 0,
-      filterGuid: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      filterGuid: "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"
     });
     console.log(userResponse);
 
