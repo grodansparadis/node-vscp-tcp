@@ -48,6 +48,7 @@ const msg_debuglog = util.debuglog('node-vscp-tcp-msg');
 /* ---------------------------------------------------------------------- */
 
 
+
 /**
  * Send VSCP tcp/ip server command
  *
@@ -128,7 +129,7 @@ module.exports = Client = function() {
    * host used for connection establishment
    * @member {string}
    */
-  this.host = '127.0.0.1';
+  this.host = "127.0.0.1";
 
   /**
    * port used for connection establishment
@@ -322,7 +323,7 @@ module.exports = Client = function() {
    * Signal a received VSCP event.
    *
    * @private
-   * @param {vscp_Event} vscpEvent - VSCP event
+   * @param {vscpEvent} vscpEvent - VSCP event
    */
   this._signalEvent = function(vscpEvent) {
     var index = 0;
@@ -456,13 +457,13 @@ Client.prototype.parseRemoteVersion =
   return version;
 }
 
-    /**
-     * Parse remote server pending event queue
-     *
-     * @param {string array} result   - Command response from remote server
-     * @return {number}               - Number of events in inqueue.
-     */
-    Client.prototype.parsePendingEventsCount =
+/**
+ * Parse remote server pending event queue
+ *
+ * @param {string array} result   - Command response from remote server
+ * @return {number}               - Number of events in inqueue.
+ */
+Client.prototype.parsePendingEventsCount =
         function(result) {
   let cnt = 0;
   let cntElements = result.response.length;
@@ -471,18 +472,20 @@ Client.prototype.parseRemoteVersion =
       (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
     cnt = parseInt(result.response[cntElements - 2]);
   }
+  
   return cnt;
+
 }
 
-        /**
-         * Parse response from interface list and return
-         * object with structured interface information
-         *
-         * @param {string array} result   - Command response from remote server
-         * @return {object array}         - Array with interface objects
-         */
-        Client.prototype.parseInterface =
-            function(result) {
+/**
+ * Parse response from interface list and return
+ * object with structured interface information
+ *
+ * @param {string array} result   - Command response from remote server
+ * @return {object array}         - Array with interface objects
+ */
+Client.prototype.parseInterface =
+    function(result) {
   let interfaces = [];
   let cntElements = result.response.length;
   if (result.response.length && (result.command === 'INTERFACE LIST') &&
@@ -504,15 +507,15 @@ Client.prototype.parseRemoteVersion =
   return interfaces;
 }
 
-            /**
-             * Parse response from challenge and return
-             * challenge string
-             *
-             * @param {string array} result   - Command response from remote
-             *     server
-             * @return {string}               - Challenge key.
-             */
-            Client.prototype.parseChallenge =
+  /**
+   * Parse response from challenge and return
+   * challenge string
+   *
+   * @param {string array} result   - Command response from remote
+   *     server
+   * @return {string}               - Challenge key.
+   */
+  Client.prototype.parseChallenge =
                 function(result) {
   let challenge = '';
   let cntElements = result.response.length;
@@ -524,16 +527,16 @@ Client.prototype.parseRemoteVersion =
   return challenge;
 }
 
-                /**
-                 * Parse response from 'retr n' and return
-                 * retrieved VSCP events in array
-                 *
-                 * @param {string array} result   - Command response from remote
-                 *     server
-                 * @return {object array}         - Array with VSCP objectS
-                 */
-                Client.prototype.parseRetrieveEvents =
-                    function(result) {
+/**
+ * Parse response from 'retr n' and return
+ * retrieved VSCP events in array
+ *
+ * @param {string array} result   - Command response from remote
+ *     server
+ * @return {object array}         - Array with VSCP objectS
+ */
+Client.prototype.parseRetrieveEvents =
+    function(result) {
   let events = [];
   let cntElements = result.response.length;
 
@@ -541,7 +544,7 @@ Client.prototype.parseRemoteVersion =
       (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
     for (let i = 0; i < (cntElements - 1); i++) {
       e = new vscp.Event();
-      e.setFromText(result.response[i]);
+      e.setFromString(result.response[i]);
       events.push(e);
     }
   }
@@ -549,15 +552,16 @@ Client.prototype.parseRemoteVersion =
   return events;
 }
 
-                    /**
-                     * Parse statistics line from remote server
-                     *
-                     * @param {string array} result   - Command response from
-                     *     remote server
-                     * @return {object}               - Statistics object
-                     */
-                    Client.prototype.parseStatistics =
-                        function(result) {
+/**
+ * Parse statistics line from remote server
+ *
+ * @param {string array} result   - Command response from
+ *     remote server
+ * @return {object}               - Statistics object
+ */
+
+Client.prototype.parseStatistics =
+    function(result) {
   let statistics = {};
   let cntElements = result.response.length;
   if ((result.response.length >= 2) && (result.command === 'STAT') &&
@@ -574,14 +578,14 @@ Client.prototype.parseRemoteVersion =
   return statistics;
 }
 
-                        /**
-                         * Parse info line from remote server
-                         *
-                         * @param {string array} result   - Command response
-                         *     from remote server
-                         * @return {object}               - Info. object
-                         */
-                        Client.prototype.parseInfo = function(result) {
+/**
+ * Parse info line from remote server
+ *
+ * @param {string array} result   - Command response
+ *     from remote server
+ * @return {object}               - Info. object
+ */
+Client.prototype.parseInfo = function(result) {
   let info = {};
   let cntElements = result.response.length;
   if ((result.response.length >= 2) && (result.command === 'INFO') &&
@@ -618,14 +622,14 @@ Client.prototype.parseChid =
   return chid;
 }
 
-    /**
-     * Parse remote server GUID
-     *
-     * @param {string array} result   - Command response from remote server
-     * @return {numeric array}        - GUID
-     */
-    Client.prototype.parseGUID =
-        function(result) {
+/**
+ * Parse remote server GUID
+ *
+ * @param {string array} result   - Command response from remote server
+ * @return {numeric array}        - GUID
+ */
+Client.prototype.parseGUID =
+    function(result) {
   let GUID = [];
   let cntElements = result.response.length;
   if ((result.response.length >= 2) && (result.command === 'GETGUID') &&
@@ -639,14 +643,14 @@ Client.prototype.parseChid =
 
 
 
-        /**
-         * Parse remote server WCYD code
-         *
-         * @param {string array} result   - Command response from remote server
-         * @return {numeric array}        - What can you do array
-         */
-        Client.prototype.parseWcyd =
-            function(result) {
+/**
+ * Parse remote server WCYD code
+ *
+ * @param {string array} result   - Command response from remote server
+ * @return {numeric array}        - What can you do array
+ */
+Client.prototype.parseWcyd =
+    function(result) {
   let wcyd = [];
   let cntElements = result.response.length;
   if ((result.response.length >= 2) && (result.command === 'WCYD') &&
@@ -658,152 +662,39 @@ Client.prototype.parseChid =
   return wcyd;
 }
 
-            /**
-             * @param {string array} result   - Command response from remote
-             *     server
-             * @return {object array}         - Array with remote variable
-             *     objects
-             */
-            Client.prototype.parseVariableList =
-                function(result) {
-  let variables = {};
-  variables.varArray = [];
-  let cntElements = result.response.length;
-  if (result.response.length && (result.command === 'VARIABLE LIST') &&
-      (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
-    result.response.pop();  // remove '+OK'
-    // Get count
-    variables.count = parseInt(result.response[0]);
-    result.response.shift();
-    result.response.forEach((item) => {
-      let items = item.split(';');
-      let obj = {};
-      obj.index = parseInt(items[0]);
-      obj.name = items[1];
-      obj.type = parseInt(items[2]);
-      obj.owner = parseInt(items[3]);
-      obj.rights = parseInt(items[4]);
-      obj.bPersistent = (/true/i).test(items[5]);
-      obj.last = new Date(items[6]);
 
-      variables.varArray.push(obj);
-    });
+/**
+ * Parse remote server OK response
+ *
+ * @param {string array} result   - Command response
+ *                                    from remote server
+ * @return {boolean}              - true if "+OK" response               
+ */
 
-    result.variables = variables;
-  }
-
-  return variables;
-}
-
-                /**
-                 * Parse remote server variable
-                 *
-                 * @param {string array} result   - Command response from remote
-                 *     server
-                 * @return {object}               - Remote variable object
-                 */
-                Client.prototype.parseVariable =
-                    function(result) {
-  let variable = {};
-  variable.value = variable.note = '';
-  let cntElements = result.response.length;
-  if ((result.response.length >= 2) && (result.command === 'VARIABLE READ') &&
-      (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
-    let varArray = result.response[cntElements - 2].split(';');
-    variable.name = varArray[0];
-    variable.type = parseInt(varArray[1]);
-    variable.user = parseInt(varArray[2]);
-    variable.rights = parseInt(varArray[3]);
-    variable.bPersistent = (/true/i).test(varArray[4]);
-    variable.last = new Date(varArray[5]);
-    variable.value = vscp.b64DecodeUnicode(varArray[6]);
-    // Note my not be present
-    if (varArray.length > 7) {
-      variable.note = vscp.b64DecodeUnicode(varArray[7]);
+Client.prototype.parseOK =
+  function(result) {
+    var rv = false;
+    let cntElements = result.response.length;
+    if ((result.response.length >= 1) &&
+        (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
+      rv = true;
     }
-    result.variable = variable;
-  }
 
-  return variable;
-}
-
-                    /**
-                     * Parse remote server value
-                     *
-                     * @param {string array} result     - Command response from
-                     *     remote server
-                     * @param {string} cmd              - Command string
-                     * @return {string}                 - Remote variable value
-                     *     on string form
-                     */
-                    Client.prototype.parseVariableValue =
-                        function(result, cmd) {
-  let value = '';
-  let cntElements = result.response.length;
-  debuglog(cmd.toUpperCase());
-  if ((result.response.length >= 2) && (result.command === cmd.toUpperCase()) &&
-      (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
-    value = vscp.b64DecodeUnicode(result.response[cntElements - 2]);
-    result.value = value;
-  }
-
-  return value;
-}
-
-                        /**
-                         * Parse remote server note
-                         *
-                         * @param {string array} result   - Command response
-                         *     from remote server
-                         * @return {string}               - Remote variable note
-                         */
-                        Client.prototype.parseVariableNote =
-                            function(result) {
-  let note = '';
-  let cntElements = result.response.length;
-  if ((result.response.length >= 2) &&
-      (result.command === 'VARIABLE READNOTE') &&
-      (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
-    note = vscp.b64DecodeUnicode(result.response[cntElements - 2]);
-    result.note = note;
-  }
-
-  return note;
-}
-
-                            /**
-                             * Parse remote variable length
-                             *
-                             * @param {string array} result   - Command response
-                             *     from remote server
-                             * @return {number}               - Remote variable
-                             *     length
-                             */
-                            Client.prototype.parseVariableLength =
-                                function(result) {
-  let length = 0;
-  let cntElements = result.response.length;
-  if ((result.response.length >= 2) && (result.command === 'VARIABLE LENGTH') &&
-      (result.response[cntElements - 1]).substr(0, 3) === '+OK') {
-    length = parseInt(result.response[cntElements - 2]);
-    result.length = length;
-  }
-
-  return length;
+    return rv;
 }
 
 
-                                /**
-                                 * Add an event listener.
-                                 *
-                                 * @param {function} eventListener - Event
-                                 *     listener function
-                                 */
-                                Client.prototype.addEventListener = function(
-                                    eventListener) {
-  if ('function' === typeof eventListener) {
-    this.onEvent.push(eventListener);
-  }
+/**
+ * Add an event listener.
+ *
+ * @param {function} eventListener - Event
+ *     listener function
+ */
+Client.prototype.addEventListener = 
+  function(eventListener) {
+    if ('function' === typeof eventListener) {
+      this.onEvent.push(eventListener);
+    }
 };
 
 /**
@@ -892,6 +783,7 @@ Client.prototype.onSrvResponse = function(chunk) {
       }
 
     } else if (this.state === this.states.RCVLOOP) {
+
       responseList = chunk.toString().split('\r\n');
       responseList.pop();  // Remove last CR LF pair
 
@@ -902,13 +794,13 @@ Client.prototype.onSrvResponse = function(chunk) {
           try {
             let offset = 0;
             eventItems = responseList[idx].split(',');
-            let evt = new vscp.Event({vscpHead: 0});
-
+            let evt = {};
+            evt.vscpHead = 0;
             evt.vscpHead = parseInt(eventItems[0]);
             evt.vscpClass = parseInt(eventItems[1]);
             evt.vscpType = parseInt(eventItems[2]);
             evt.vscpObId = parseInt(eventItems[3]);
-
+            
             if (0 < eventItems[4].length) {
               evt.vscpDateTime = new Date(eventItems[4]);
             } else {
@@ -932,7 +824,7 @@ Client.prototype.onSrvResponse = function(chunk) {
                 ' CLASS = ' + evt.vscpClass + ' TYPE = ' + evt.vscpType +
                 ' GUID = ' + evt.vscpGuid +
                 ' DATETIME = ' + evt.vscpDateTime.toISOString() +
-                ' PRIORITY = ' + evt.getPriority() + ' DATA = ' + evt.vscpData);
+                ' PRIORITY =  DATA = ' + evt.vscpData);
 
             this._signalEvent(evt);
           } catch(err) {
@@ -1251,18 +1143,15 @@ Client.prototype.sendCommand = function(options) {
  * Send event to VSCP server.
  *
  * @param {object} options              - Options
- * @param {string} options.eventstr     - VSCP event on string form to send
+ * @param {string|object} options.event - VSCP event on string or object form to send
  * @param {function} options.onSuccess  - Callback on success
  * @param {function} options.onError    - Callback on error
  */
-Client.prototype.sendEvent = function(options) {
-  /* eslint-disable no-unused-vars */
-  return new Promise(function(resolve, reject) {
-    /* eslint-enable no-unused-vars */
+Client.prototype.sendEvent = async function(options) {
 
     var cmdObj = null;
     var cmdStr = 'send';
-    var eventStr = '';
+    var event = '';
     var onSuccess = null;
     var onError = null;
 
@@ -1271,7 +1160,8 @@ Client.prototype.sendEvent = function(options) {
       return;
     }
 
-    if ('string' !== typeof options.eventstr) {
+    if ( ('string' !== typeof options.event) && 
+         ('object' !== typeof options.event) ) {
       console.error(vscp.getTime() + ' Event string is missing.');
       return;
     }
@@ -1283,72 +1173,31 @@ Client.prototype.sendEvent = function(options) {
     if ('function' === typeof options.onError) {
       onError = options.onError;
     }
-
-    sendCommand({
-      command: 'send',
-      argument: options.eventstr,
-      onSuccess: onSuccess,
-      ObError: onError,
-      resolve: resolve,
-      reject: reject
-    });
-  }.bind(this));
-};
-
-/**
- * Send a VSCP event to the VSCP server.
- *
- * @param {object} options                  - Options
- * @param {vscp_Event} options.event        - VSCP event to send
- * @param {function} [options.onSuccess]    - Function which is called on a
- *                                            successful operation
- * @param {function} [options.onError]      - Function which is called on a
- *                                            failed operation
- *
- * @return {object} Promise
- */
-Client.prototype.sendEvent = function(options) {
-  return new Promise(function(resolve, reject) {
-    var cmdArg = '';
-    var onSuccess = null;
-    var onError = null;
-
-    if ('undefined' === typeof options) {
-      console.error(vscp.getTime() + ' Options are missing.');
-      reject(Error('Options are missing.'));
-      return;
+    
+    var result;
+    if ( 'object' === typeof options.event ) {
+      var ev = new vscp.Event(options.event);
+      cmdArg = ev.getAsString();  
+      result = await this.sendCommand({
+        command: 'send',
+        argument: cmdArg,
+        onSuccess: onSuccess,
+        ObError: onError,
+      });
+      
+    }
+    else {  // string argument
+      
+      result = await this.sendCommand({
+        command: 'send',
+        argument: options.event,
+        onSuccess: onSuccess,
+        ObError: onError,
+      });
+      
     }
 
-    if ('undefined' === typeof options.event) {
-      console.error(vscp.getTime() + ' VSCP event is missing.');
-      reject(Error('VSCP event is missing.'));
-      return;
-    }
-
-    if (false === options.event instanceof vscp_Event) {
-      console.error(vscp.getTime() + ' Event is invalid.');
-      reject(Error('Event is invalid.'));
-      return;
-    }
-
-    if ('function' === typeof options.onSuccess) {
-      onSuccess = options.onSuccess;
-    }
-
-    if ('function' === typeof options.onError) {
-      onError = options.onError;
-    }
-
-    cmdArg = options.event.getText();
-
-    this.sendEvent({
-      eventstr: cmdArg,
-      onSuccess: onSuccess,
-      onError: onError,
-      resolve: resolve,
-      reject: reject
-    });
-  }.bind(this));
+    return this.parseOK(result);  
 };
 
 /**
@@ -1361,7 +1210,9 @@ Client.prototype.sendEvent = function(options) {
  *                                         a failed operation
  * @return {object} Result object
  */
+
 Client.prototype.noop = async function(options) {
+
   var onSuccess = null;
   var onError = null;
 
@@ -1381,7 +1232,7 @@ Client.prototype.noop = async function(options) {
     onError: onError,
   });
 
-  return result;
+  return this.parseOK(result);
 };
 
 /**
@@ -1425,7 +1276,7 @@ Client.prototype.user = async function(options) {
     onError: onError,
   });
 
-  return result;
+  return this.parseOK(result);
 };
 
 /**
@@ -1470,7 +1321,7 @@ Client.prototype.password = async function(options) {
     onError: onError,
   });
 
-  return result;
+  return this.parseOK(result);
 };
 
 /**
@@ -1503,7 +1354,7 @@ Client.prototype.quit = async function(options) {
     onError: onError,
   });
 
-  return result;
+  return this.parseOK(result);
 };
 
 /**
@@ -1678,13 +1529,13 @@ Client.prototype.getPendingEventCount = async function(options) {
       onError = options.onError;
     }
   }
-
+  
   const result = await this.sendCommand({
     command: 'chkdata',
     onSuccess: onSuccess,
     onError: onError,
   });
-
+  
   return this.parsePendingEventsCount(result);
 };
 

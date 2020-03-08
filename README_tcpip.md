@@ -189,7 +189,7 @@ testRcvLoop().catch(err => {
 
 It is always ok to have more then one connection open to a VSCP daemon. This is not always true for a lower end VSCP tcp/ip device. Some may just allow for one client connection. You can use the **wcyd** command to check if a node accept more than one connection.
 
-Another thing to remember if you have more than one connection to a remote server/device is that if you just open up a second connection you will receive the events you send on the other connection.You can prevent this by setting the receiving channels channel id to the same value as the sending channels id. User **getChannelID** to get the channel oid and set it with **setChannelID**
+Another thing to remember if you have more than one connection to a remote server/device is that if you just open up a second connection you will receive the events you send on the other connection.You can prevent this by setting the receiving channels channel id to the same value as the sending channels id. User **getChannelID** to get the channel id and set it in your message obid.
 
 All commands allow you to specify an **onsuccess** and an **onerror** callback. This may be they way yo prefers to work instead of using promises.
 
@@ -252,7 +252,51 @@ function testPromise() {
 
 testPromise();
 ```
+---
 
+## Send events
+
+To send an event one can do that with the sendEvent command
+
+Syntax is 
+
+```javascript
+sendEvent(options)
+```
+
+where options is and object
+
+```javascript
+{
+  event: ev,
+  onSuccess: funcSuccess,
+  onError: funcError
+}
+```
+
+Both functions are optional.
+
+**Example**
+```javascript
+const testAsync = async () => {
+var ev = {};
+    ev.head = 0;
+    ev.vscpObId = 13,
+    ev.vscpTimeStamp = 123,
+    ev.vscpClass = 10,
+    ev.vscpType = 6,
+    ev.vscpGuid = "00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF",
+    ev.vscpData = [1,2,3,4,5,6,7,8]
+
+    console.log("Send event to vscp VSCP daemon");
+    const options = {};
+    options.event = ev;
+    rv = await vscpclient.sendEvent(options);
+    console.log("Response from sendEvent: " + rv);
+}
+```
+
+The event can also be given on string form instead of object form.
 
 ---
 
