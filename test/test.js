@@ -40,7 +40,8 @@ const vscp_tcp_client = require('../src/vscptcp.js');
 
 var sleep = require('sleep');
 
-const srv = "127.0.0.1";
+//const srv = "127.0.0.1";
+const srv = "192.168.1.6";
 //const srv = "192.168.1.26";   // pi2
 //const srv = "192.168.1.44";   // pi11
 //const srv = "192.168.1.44";
@@ -143,7 +144,7 @@ const testAsync = async () => {
     console.log("Send NOOP command to VSCP daemon");
   
     // Send no operation command (does nothing)
-    rv = await vscpclient.sendCommand(
+    var rv = await vscpclient.sendCommand(
       {
         command: "noop"
       }
