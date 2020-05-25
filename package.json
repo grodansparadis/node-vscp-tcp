@@ -1,12 +1,11 @@
 {
   "name": "node-vscp-tcp",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "VSCP tcp/ip interface routines for node.js",
   "main": "./src/vscptcp.js",
   "scripts": {
     "test": "node ./test/test.js",
     "testrcv": "node ./test/test_rcvloop.js",
-    "readme2html": "node_modules/.bin/markdown README.md -f gfm",
     "update-dependencies": "./node_modules/.bin/ncu -u && npm install",
     "lint": "./node_modules/.bin/eslint ."
   },

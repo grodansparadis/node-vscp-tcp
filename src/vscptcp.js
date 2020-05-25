@@ -1017,7 +1017,7 @@ class Client {
   this.disconnect = function(options) {
     /* eslint-disable no-unused-vars */
     return new Promise(function(resolve, reject) {
-      /* eslint-enable no-unused-vars */
+    /* eslint-enable no-unused-vars */
 
       var onSuccess = null;
 
@@ -1050,6 +1050,7 @@ class Client {
         this.socket = null;
         this.state = this.states.DISCONNECTED;
         this.cmdQueue = [];
+        this.emit('disconnect'); // Tell the world
       });
     }.bind(this));
   };
