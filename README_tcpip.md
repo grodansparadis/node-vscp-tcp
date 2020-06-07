@@ -28,7 +28,7 @@ Easiest is to use async calls like this
 ```javascript
 const testAsync = async () => {
 
-  let vscp_tcp_client = new vscp_tcp_Client();
+  let vscp_tcp_client = new vscp_tcp_client();
 
   vscpclient.on('connect', function() {
     console.log("---------------- CONNECT -------------------");
@@ -149,7 +149,7 @@ But better is to have a second connection to the remote server/device and use th
 ```javascript
 const testRcvLoop = async () => {
 
-  let vscp_tcp_client = new vscp_tcp_Client();
+  let vscp_tcp_client = new vscp_tcp_client();
 
   // Add a lister function for events from remote server
   vscp_tcp_client.addEventListener((e) => {
@@ -199,7 +199,7 @@ Here are a sample without async/await
 function testPromise() {
 
   var start = new Date().getTime();
-  let vscp_tcp_client = new vscp_tcp_Client();
+  let vscp_tcp_client = new vscp_tcp_client();
 
   vscp_tcp_client.connect(
     {
