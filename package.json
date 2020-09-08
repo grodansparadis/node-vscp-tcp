@@ -27,17 +27,17 @@
   },
   "homepage": "https://github.com/grodansparadis/node-vscp-tcp#readme",
   "dependencies": {
-    "events": "^3.1.0",
+    "events": "^3.2.0",
     "net": "^1.0.2",
-    "node-vscp": "^1.1.15",
+    "node-vscp": "^1.1.17",
     "util": "^0.12.3"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "mocha": "^7.1.2",
-    "node-vscp-class": "^1.0.9",
-    "node-vscp-type": "^1.0.7",
+    "mocha": "^7.2.0",
+    "node-vscp-class": "^1.0.10",
+    "node-vscp-type": "^1.0.8",
     "npm-check-updates": "^4.1.2",
-    "sleep": "^6.1.0"
+    "sleep": "^6.3.0"
   }
 }
