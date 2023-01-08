@@ -37,7 +37,7 @@
     "mocha": "^10.0.0",
     "node-vscp-class": "^1.0.18",
     "node-vscp-type": "^1.0.18",
-    "npm-check-updates": "^13.0.0",
+    "npm-check-updates": "^16.6.2",
     "sleep": "^6.3.0"
   }
 }
