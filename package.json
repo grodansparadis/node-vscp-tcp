@@ -29,15 +29,15 @@
   "dependencies": {
     "events": "^3.3.0",
     "net": "^1.0.2",
-    "node-vscp": "^1.1.22",
-    "util": "^0.12.4"
+    "node-vscp": "^1.1.27",
+    "util": "^0.12.5"
   },
   "devDependencies": {
-    "eslint": "^8.15.0",
-    "mocha": "^10.0.0",
-    "node-vscp-class": "^1.0.18",
-    "node-vscp-type": "^1.0.18",
-    "npm-check-updates": "^16.7.4",
+    "eslint": "^9.39.1",
+    "mocha": "^11.7.5",
+    "node-vscp-class": "^1.0.23",
+    "node-vscp-type": "^1.0.22",
+    "npm-check-updates": "^19.1.2",
     "sleep": "^6.3.0"
   }
 }
