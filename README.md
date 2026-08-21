@@ -20,4 +20,4 @@ Module functionality is described [here](./README_tcpip.md)
 Full documentation for VSCP is available at [https://docs.vscp.org](https://docs.vscp.org) and downloads can be found at [https://download.vscp.org](https://download.vscp.org)
 
 ---
-Copyright © 2000-2020 Åke Hedman, Grodans Paradis AB
+Copyright © 2000-2026 Åke Hedman, Grodans Paradis AB
